@@ -5,6 +5,16 @@
 # - If a line of 3 is detected or no more room on the board end game
 
 
+# Better AI:
+# - Get the hash of the board
+# - Evaluate current positions of O
+# - Evaluate open areas on the board
+# - Rank the open areas on the board by
+#    - Checking Win rules
+#    - Counting giving more weight to the position that appears in most rules
+# - Pick the highest ranking position
+
+
 require 'pry'
 
 BOARD_POSITIONS = (1..9).to_a
@@ -23,6 +33,7 @@ def initialize_board(numbers=false)
   board
 end
 
+
 def draw_board(b)
   puts VERTICAL_LINES
   puts "  #{b[1] || ' '}  |  #{b[2] || ' '}  |  #{b[3] || ' '}"
@@ -37,6 +48,7 @@ def draw_board(b)
   puts VERTICAL_LINES
   puts ""
 end
+
 
 def draw_guide_board(b)
   guide_board = b.dup
@@ -64,7 +76,17 @@ end
 
 def computer_choose_position(b)
   positions = available_positions(b)
-  positions.keys.sample
+
+  binding.pry
+
+  # If there are no O on the board go randomly
+  if !b.has_value?(COMPUTER_PIECE)
+    positions.keys.sample
+  # else
+
+  end
+
+
 end
 
 
