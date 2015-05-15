@@ -76,14 +76,24 @@ end
 
 def horizontal_victory(b)
   win = false
-  [1, 4, 7].each {|i| win = b[i] if ( b[i] == b[i + 1] ) && ( b[i + 1] == b [i + 2] ) }
+  [1, 4, 7].each do |i|
+    if ( b[i] == b[i + 1] ) && ( b[i + 1] == b [i + 2] )
+      win = b[i]
+      break
+    end
+  end
   win
 end
 
 
 def vertical_victory(b)
   win = false
-  (1..3).each {|i| win = b[i] if ( b[i] == b[i + 3] ) && ( b[i + 3] == b[i + 6]) }
+  (1..3).each do |i|
+    if ( b[i] == b[i + 3] ) && ( b[i + 3] == b[i + 6])
+      win = b[i]
+      break
+    end
+  end
   win
 end
 
@@ -149,14 +159,16 @@ begin
   # Draw new board
   draw_board(game_board)
 
-
 end until end_game(game_board)
 
+
 puts "Game Over!"
-if end_game(game_board) == PLAYER_PIECE
+
+case end_game(game_board)
+when PLAYER_PIECE
   puts "You Won!"
-elsif end_game(game_board) == COMPUTER_PIECE
+when COMPUTER_PIECE
   puts "Computer Won!"
 else
-  puts "It's a tie!"
+  "It's a tie!"
 end
