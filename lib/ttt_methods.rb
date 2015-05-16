@@ -1,6 +1,10 @@
 # Tic Tac Toe Methods
 
 BOARD_POSITIONS = (1..9).to_a
+
+BOARD_WIDTH = 3
+BOARD_HEIGHT  = 3
+
 VERTICAL_LINES =   "     |     |     "
 HORIZONTAL_LINES = "-----+-----+-----"
 PLAYER_PIECE   = 'X'
@@ -81,12 +85,28 @@ end
 
 def horizontal_victory(b)
   win = false
-  [1, 4, 7].each do |i|
-    if b[i] != ' ' &&  ( b[i] == b[i + 1] ) && ( b[i + 1] == b [i + 2] )
-      win = b[i]
-      break
+  # [1, 4, 7].each do |i|
+  #   if b[i] != ' ' &&  ( b[i] == b[i + 1] ) && ( b[i + 1] == b [i + 2] )
+  #     win = b[i]
+  #     break
+  #   end
+  # end
+
+  start_at = 1
+  BOARD_HEIGHT.times do |i|
+    board_values = []
+    board_values << b[start_at]
+    board_values << b[start_at + 1]
+    board_values << b[start_at + 2]
+    board_values.uniq!
+
+    if board_values.count == 1 && board_values.first != ' '
+      win = b[start_at]
     end
+
+    start_at += BOARD_WIDTH
   end
+
   win
 end
 
