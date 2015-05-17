@@ -91,21 +91,25 @@ end
 
 # Returns an array of values for the specified column
 def board_column_values(board, column_number)
-  start_value = row_number == 1 ? 0 : (row_number * BOARD_WIDTH) - BOARD_WIDTH
-  board.values.slice(start_value ,BOARD_WIDTH)
-
   column_values = []
 
   BOARD_HEIGHT.times do |i|
-    column_values.push << board.values[column_number + i]
-
+    column_values << board.values[column_number - 1 + BOARD_WIDTH * i]
   end
+  column_values
 end
 
 
 # Accepts an array of values, evaluates if victory condition met on row
 def victory_row?(row_values)
   unique_values = row_values.uniq
+  unique_values.count == 1 && unique_values.first != ' '
+end
+
+
+# Accepts an array of values, evaluates if victory condition met on column
+def victory_column?(column_values)
+  unique_values = column_values.uniq
   unique_values.count == 1 && unique_values.first != ' '
 end
 
@@ -123,14 +127,15 @@ def horizontal_victory(b)
 end
 
 
+# Returns the winning column number otherwise false
 def vertical_victory(b)
   win = false
-  (1..3).each do |i|
-    if ( b[i] == b[i + 3] ) && ( b[i + 3] == b[i + 6])
-      win = b[i]
-      break
-    end
+
+  (1..BOARD_WIDTH).each do |i|
+    column_values = board_column_values(b, i)
+    win = i if victory_column?(column_values)
   end
+
   win
 end
 
@@ -146,13 +151,13 @@ end
 
 
 def end_game(board)
-  if horizontal_victory(board)
-    horizontal_victory(board)
-  elsif vertical_victory(board)
-    vertical_victory(board)
-  elsif diagonal_victory(board)
-    diagonal_victory(board)
-  elsif available_positions(board).empty?
-    true
-  end
+  # if horizontal_victory(board)
+  #   horizontal_victory(board)
+  # elsif vertical_victory(board)
+  #   vertical_victory(board)
+  # elsif diagonal_victory(board)
+  #   diagonal_victory(board)
+  # elsif available_positions(board).empty?
+  #   true
+  # end
 end
