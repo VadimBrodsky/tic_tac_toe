@@ -89,6 +89,20 @@ def board_row_values(board, row_number)
 end
 
 
+# Returns an array of values for the specified column
+def board_column_values(board, column_number)
+  start_value = row_number == 1 ? 0 : (row_number * BOARD_WIDTH) - BOARD_WIDTH
+  board.values.slice(start_value ,BOARD_WIDTH)
+
+  column_values = []
+
+  BOARD_HEIGHT.times do |i|
+    column_values.push << board.values[column_number + i]
+
+  end
+end
+
+
 # Accepts an array of values, evaluates if victory condition met on row
 def victory_row?(row_values)
   unique_values = row_values.uniq
