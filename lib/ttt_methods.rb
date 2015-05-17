@@ -73,7 +73,6 @@ def computer_choose_position(b)
     positions.keys.sample
   end
 
-
 end
 
 
@@ -83,28 +82,27 @@ def position_not_taken?(board, position)
 end
 
 
+# Returns an array of values for the specified row
+def board_row_values(board, row_number)
+  start_value = row_number == 1 ? 0 : (row_number * BOARD_WIDTH) - BOARD_WIDTH
+  board.values.slice(start_value ,BOARD_WIDTH)
+end
+
+
+# Accepts an array of values, evaluates if victory condition met on row
+def victory_row?(row_values)
+  unique_values = row_values.uniq
+  unique_values.count == 1 && unique_values.first != ' '
+end
+
+
+# Returns the winning row number otherwise false
 def horizontal_victory(b)
   win = false
-  # [1, 4, 7].each do |i|
-  #   if b[i] != ' ' &&  ( b[i] == b[i + 1] ) && ( b[i + 1] == b [i + 2] )
-  #     win = b[i]
-  #     break
-  #   end
-  # end
 
-  start_at = 1
-  BOARD_HEIGHT.times do |i|
-    board_values = []
-    board_values << b[start_at]
-    board_values << b[start_at + 1]
-    board_values << b[start_at + 2]
-    board_values.uniq!
-
-    if board_values.count == 1 && board_values.first != ' '
-      win = b[start_at]
-    end
-
-    start_at += BOARD_WIDTH
+  (1..BOARD_HEIGHT).each do |i|
+    row_values = board_row_values(b, i)
+    win = i if victory_row?(row_values)
   end
 
   win
