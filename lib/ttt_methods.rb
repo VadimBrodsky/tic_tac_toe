@@ -1,4 +1,5 @@
 # Tic Tac Toe Methods
+require 'pry'
 
 BOARD_POSITIONS = (1..9).to_a
 
@@ -37,7 +38,7 @@ def draw_guide_board(b)
   guide_board = b.dup
 
   system('clear')
-  puts 'Guide of Positions \n\n\n'
+  puts "Guide of Positions \n\n\n"
 
   guide_board.each do |key, value|
     guide_board[key] = key if value == false
@@ -48,7 +49,7 @@ end
 
 def available_positions(b)
   board = b.dup
-  board.delete_if do |key, value|
+  board.delete_if do |key|
     b[key]
   end
 end
@@ -87,16 +88,37 @@ def board_column_values(board, column_number)
   column_values
 end
 
+# Returns an array of values for the specified diagonal, left by default
+def board_diagonal_values(board, left_diagonal = true)
+  values = []
+  start_at = left_diagonal ? 1 : 3
+  BOARD_HEIGHT.times do
+    values << board[start_at]
+    start_at += BOARD_WIDTH
+    start_at = left_diagonal ? start_at + 1 : start_at - 1
+  end
+  values
+end
+
+def one_unique_value?(array_of_values)
+  array_of_values.count == 1 && array_of_values[0] && array_of_values[0] != ' '
+end
+
 # Accepts an array of values, evaluates if victory condition met on row
 def victory_row?(row_values)
   unique_values = row_values.uniq
-  unique_values.count == 1 && unique_values.first != ' '
+  one_unique_value?(unique_values)
 end
 
 # Accepts an array of values, evaluates if victory condition met on column
 def victory_column?(column_values)
   unique_values = column_values.uniq
-  unique_values.count == 1 && unique_values.first != ' '
+  one_unique_value?(unique_values)
+end
+
+def victory_diagonal?(diagonal_values)
+  unique_values = diagonal_values.uniq
+  one_unique_value?(unique_values)
 end
 
 # Returns the winning row number otherwise false
@@ -123,23 +145,27 @@ def vertical_victory(b)
   win
 end
 
+# Returns the winning diagonal number otherwise false
 def diagonal_victory(b)
-  if ((b[1] == b[1 + 4]) && (b[1 + 4] == b[1 + 8])) ||
-     ((b[3] == b[3 + 2]) && (b[3 + 2] == b[3 + 4]))
-    b[5]
+  if victory_diagonal?(board_diagonal_values(b, true))
+    1
+  elsif victory_diagonal?(board_diagonal_values(b, false))
+    2
   else
     false
   end
 end
 
 def end_game(board)
-  # if horizontal_victory(board)
-  #   horizontal_victory(board)
-  # elsif vertical_victory(board)
-  #   vertical_victory(board)
-  # elsif diagonal_victory(board)
-  #   diagonal_victory(board)
-  # elsif available_positions(board).empty?
-  #   true
-  # end
+  if horizontal_victory(board)
+    true
+  elsif vertical_victory(board)
+    true
+  elsif diagonal_victory(board)
+    true
+  elsif available_positions(board).empty?
+    true
+  else
+    false
+  end
 end

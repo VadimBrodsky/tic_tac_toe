@@ -23,8 +23,7 @@ draw_board(initialize_board(true))
 game_board = initialize_board
 
 # Main Game Loop
-begin
-
+loop do
   # Get user position
   begin
     print "Choose a position (1 to 9) to place 'X' or G for guide: "
@@ -44,13 +43,15 @@ begin
   system('clear')
   puts "You placed X in position #{player_position}"
   puts "Computer placed O in position #{computer_position}"
+  # p game_board
 
   puts "\n"
 
   # Draw new board
   draw_board(game_board)
 
-end until end_game(game_board)
+  break if end_game(game_board)
+end
 
 puts 'Game Over!'
 
