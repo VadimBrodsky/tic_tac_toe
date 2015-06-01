@@ -54,22 +54,35 @@ end
 class Board
   attr_reader :board
 
-  def initialize(guide: false)
+  def initialize
     @board = (1..9).map{|i| Cell.new(i)}
-    @board = (1..9).map{|i| Cell.new(i, i.to_s)} if guide
   end
 
   def draw_board
     @board.each do |cell|
-      print " #{cell} "
-      print cell.last_column? ? "\n" : '|'
-      puts '---+---+---' if cell.last_column? && !cell.last_row?
+      print_row(cell)
     end
     puts ''
   end
 
+  def draw_guide_board
+    @board.each do |cell|
+      guide_cell = cell.dup
+      guide_cell.mark = cell.mark == ' ' ? cell.index : cell.mark
+      print_row(guide_cell)
+    end
+  end
+
+  def print_row(cell)
+    print " #{cell.mark} "
+    print cell.last_column? ? "\n" : '|'
+    puts '---+---+---' if cell.last_column? && !cell.last_row?
+  end
+
   def mark(position, mark = 'X')
-    @board[position - 1].mark = mark
+    if @board[position - 1].mark == ' '
+      @board[position - 1].mark = mark
+    end
   end
 end
 
@@ -77,7 +90,6 @@ end
 
 class Game
   def initialize
-    @guide = Board.new(guide: true)
     @ttt = Board.new
     welcome
     play
@@ -86,11 +98,36 @@ class Game
   def welcome
     system('clear')
     puts "Welcome to Tic-Tac-Toe\n\n"
-    @guide.draw_board
+    @ttt.draw_guide_board
+    puts ''
   end
 
   def play
-    player_choice = ask_input
+    loop do
+      ask_player_position == 'g' ? draw_guide_board : redraw_borad
+    end
+  end
+
+  def redraw_borad
+    system('clear')
+    puts "\n\n"
+    @ttt.draw_board
+  end
+
+  def draw_guide_board
+    system('clear')
+    puts "\n\n"
+    @ttt.draw_guide_board
+    puts ''
+  end
+
+  def ask_player_position
+    player_position = ask_input
+    if player_position == 'g'
+      'g'
+    else
+      @ttt.mark(player_position.to_i, 'X')
+    end
   end
 
   def ask_input
@@ -106,4 +143,4 @@ end
 
 
 Game.new
-binding.pry
+# binding.pry
