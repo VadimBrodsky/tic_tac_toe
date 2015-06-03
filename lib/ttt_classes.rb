@@ -94,6 +94,22 @@ class Board
     end
     spaces
   end
+
+  def row(r = 1)
+    @board.find_all {|cell| cell if cell.row == r}
+  end
+
+  def column(c = 1)
+    @board.find_all {|cell| cell if cell.column == c}
+  end
+
+  def diagonal(d = 1)
+    if d == 1
+      @board.find_all{|cell| cell if cell.row == cell.column}
+    elsif d == 2
+      @board.find_all{|cell| cell if [3, 5, 7].include? cell.index }
+    end
+  end
 end
 
 
@@ -101,6 +117,7 @@ end
 class Game
   def initialize
     @ttt = Board.new
+    @winner = nil
     welcome
     play
   end
@@ -126,6 +143,10 @@ class Game
       end
 
       redraw_borad
+
+      binding.pry
+
+      break if game_over?
     end
   end
 
@@ -159,6 +180,34 @@ class Game
   def computer_make_mark
     computer_position =  @ttt.blank_spaces.sample
     @ttt.mark(computer_position, 'O')
+  end
+
+  def winning_row?(r = 1)
+    win_mark = @ttt.row(r).collect{|c| c.mark}.uniq
+    win_mark.length == 1 && win_mark.first != ' '
+  end
+
+  def winning_column?(c = 1)
+    win_mark = @ttt.column(c).collect{|c| c.mark}.uniq
+    win_mark.length == 1 && win_mark.first != ' '
+  end
+
+  def winning_diagonal?(d = 1)
+    if d < 3
+      win_mark = @ttt.diagonal(d).collect{|c| c.mark}.uniq
+      win_mark.length == 1 && win_mark.first != ' '
+    else
+      []
+    end
+  end
+
+  def game_over?
+    (1..3).each do |i|
+      @winner = @ttt.row(i).first.mark if winning_row?(i)
+      @winner = @ttt.row(i).first.mark if winning_column?(i)
+      @winner = @ttt.row(i).first.mark if winning_diagonal?(i)
+    end
+    !@winner.nil?
   end
 end
 
