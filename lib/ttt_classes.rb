@@ -139,19 +139,21 @@ class Game
 
       if @ttt.blank_spaces.include?(player_position.to_i)
         player_make_mark(player_position.to_i)
+        break if game_over?
         computer_make_mark
+        break if game_over?
       end
 
       redraw_borad
-
-      binding.pry
-
-      break if game_over?
+      # binding.pry
     end
+    redraw_borad
+
+    puts 'Game OVER!!!'
   end
 
   def redraw_borad
-    # system('clear')
+    system('clear')
     puts "\n\n"
     @ttt.draw_board
   end
@@ -196,8 +198,6 @@ class Game
     if d < 3
       win_mark = @ttt.diagonal(d).collect{|c| c.mark}.uniq
       win_mark.length == 1 && win_mark.first != ' '
-    else
-      []
     end
   end
 
@@ -205,7 +205,7 @@ class Game
     (1..3).each do |i|
       @winner = @ttt.row(i).first.mark if winning_row?(i)
       @winner = @ttt.row(i).first.mark if winning_column?(i)
-      @winner = @ttt.row(i).first.mark if winning_diagonal?(i)
+      @winner = @ttt.board[4].mark if winning_diagonal?(i)
     end
     !@winner.nil?
   end
