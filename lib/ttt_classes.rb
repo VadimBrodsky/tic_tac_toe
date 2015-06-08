@@ -120,16 +120,9 @@ end
 class Game
   def initialize
     @ttt = Board.new
-    @winner = nil
+    winner = nil
     welcome
     play
-  end
-
-  def welcome
-    system('clear')
-    puts "Welcome to Tic-Tac-Toe\n\n"
-    @ttt.draw_guide_board
-    puts ''
   end
 
   def play
@@ -155,8 +148,19 @@ class Game
       # binding.pry
     end
 
+    # binding.pry
+
     puts 'Game OVER'
     puts "#{@winner}!\n\n"
+  end
+
+  protected
+
+  def welcome
+    system('clear')
+    puts "Welcome to Tic-Tac-Toe\n\n"
+    @ttt.draw_guide_board
+    puts ''
   end
 
   def redraw_borad
@@ -208,33 +212,44 @@ class Game
     end
   end
 
-  def check_for_winner
-    (1..3).each do |i|
-      winner_name(@ttt.row(i).first.mark) if winning_row?(i)
-      winner_name(@ttt.row(i).first.mark) if winning_column?(i)
-      winner_name(@ttt.board[4].mark)     if winning_diagonal?(i)
-    end
-    !@winner.nil?  # winner found?
-  end
-
-  def winner_name(mark)
-    @winner = 'Player Won'  if mark == 'X' && @winner.nil?
-    @winner = 'Computer Won'if mark == 'O' && @winner.nil?
-  end
-
-  def check_for_draw
-    if @ttt.board_full? && @winner.nil?
-      @winner = "It's a Draw"
-    end
-  end
+  # def winner=(mark)
+  #   case mark
+  #   when mark == 'X' && winner.nil?
+  #     self.winner = 'Player Won'
+  #   when mark == 'O' && winner.nil?
+  #     self.winner = 'Computer Won'
+  #   when mark == 'D' && winner.nil?
+  #     self.winner = "It's a Draw"
+  #   else
+  #     self.winner = nil
+  #   end
+  # end
+  #
+  # def winner
+  #   self.winner
+  # end
+  #
+  # def check_for_winner
+  #   mark = false
+  #   (1..3).each do |i|
+  #     mark = @ttt.row(i).first.mark if winning_row?(i)
+  #     mark = @ttt.row(i).first.mark if winning_column?(i)
+  #     mark = @ttt.board[4].mark     if winning_diagonal?(i)
+  #   end
+  #   mark
+  # end
+  #
+  # def check_for_draw
+  #   if @ttt.board_full? && winner.nil?
+  #     'D'
+  #   end
+  # end
 
   def game_over?
-    unless @ttt.board_full?
-      check_for_winner
-    else
-      check_for_winner
-      check_for_draw
-    end
+    # winner = check_for_winner
+    # winner = check_for_draw
+    # !winner.nil?
+    p 'check for over'
   end
 end
 
