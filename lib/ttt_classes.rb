@@ -110,8 +110,11 @@ class Board
       @board.find_all{|cell| cell if [3, 5, 7].include? cell.index }
     end
   end
-end
 
+  def board_full?
+    self.blank_spaces.length == 0
+  end
+end
 
 
 class Game
@@ -132,6 +135,7 @@ class Game
   def play
     loop do
       player_position = ask_input
+
       if player_position == 'g'
         draw_guide_board
         next
@@ -139,17 +143,20 @@ class Game
 
       if @ttt.blank_spaces.include?(player_position.to_i)
         player_make_mark(player_position.to_i)
+        redraw_borad
         break if game_over?
-        computer_make_mark
-        break if game_over?
+      else
+        next
       end
 
+      computer_make_mark
       redraw_borad
+      break if game_over?
       # binding.pry
     end
-    redraw_borad
 
-    puts 'Game OVER!!!'
+    puts 'Game OVER'
+    puts "#{@winner}!\n\n"
   end
 
   def redraw_borad
@@ -201,13 +208,33 @@ class Game
     end
   end
 
-  def game_over?
+  def check_for_winner
     (1..3).each do |i|
-      @winner = @ttt.row(i).first.mark if winning_row?(i)
-      @winner = @ttt.row(i).first.mark if winning_column?(i)
-      @winner = @ttt.board[4].mark if winning_diagonal?(i)
+      winner_name(@ttt.row(i).first.mark) if winning_row?(i)
+      winner_name(@ttt.row(i).first.mark) if winning_column?(i)
+      winner_name(@ttt.board[4].mark)     if winning_diagonal?(i)
     end
-    !@winner.nil?
+    !@winner.nil?  # winner found?
+  end
+
+  def winner_name(mark)
+    @winner = 'Player Won'  if mark == 'X' && @winner.nil?
+    @winner = 'Computer Won'if mark == 'O' && @winner.nil?
+  end
+
+  def check_for_draw
+    if @ttt.board_full? && @winner.nil?
+      @winner = "It's a Draw"
+    end
+  end
+
+  def game_over?
+    unless @ttt.board_full?
+      check_for_winner
+    else
+      check_for_winner
+      check_for_draw
+    end
   end
 end
 
