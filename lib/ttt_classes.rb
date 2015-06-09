@@ -120,6 +120,7 @@ end
 class Game
   def initialize
     @ttt = Board.new
+    @game_state = {game_over: false, winner: nil}
     winner = nil
     welcome
     play
@@ -142,19 +143,16 @@ class Game
         next
       end
 
-      computer_make_mark
-      redraw_borad
-      break if game_over?
-      # binding.pry
+      unless @ttt.board_full?
+        computer_make_mark
+        redraw_borad
+        break if game_over?
+      end
     end
-
-    # binding.pry
 
     puts 'Game OVER'
     puts "#{@winner}!\n\n"
   end
-
-  protected
 
   def welcome
     system('clear')
@@ -212,45 +210,21 @@ class Game
     end
   end
 
-  # def winner=(mark)
-  #   case mark
-  #   when mark == 'X' && winner.nil?
-  #     self.winner = 'Player Won'
-  #   when mark == 'O' && winner.nil?
-  #     self.winner = 'Computer Won'
-  #   when mark == 'D' && winner.nil?
-  #     self.winner = "It's a Draw"
-  #   else
-  #     self.winner = nil
-  #   end
-  # end
-  #
-  # def winner
-  #   self.winner
-  # end
-  #
-  # def check_for_winner
-  #   mark = false
-  #   (1..3).each do |i|
-  #     mark = @ttt.row(i).first.mark if winning_row?(i)
-  #     mark = @ttt.row(i).first.mark if winning_column?(i)
-  #     mark = @ttt.board[4].mark     if winning_diagonal?(i)
-  #   end
-  #   mark
-  # end
-  #
-  # def check_for_draw
-  #   if @ttt.board_full? && winner.nil?
-  #     'D'
-  #   end
-  # end
-
   def game_over?
-    # winner = check_for_winner
-    # winner = check_for_draw
-    # !winner.nil?
-    p 'check for over'
+    @game_state[:game_over] = true if @ttt.board_full?
+    winner_found?
+    @game_state[:game_over]
   end
+
+  def winner_found?
+    (1..3).each do |i|
+      winner = true if winning_row?(i)
+      winner = true if winning_column?(i)
+      winner = true if winning_diagonal?(i)
+    end
+    winner
+  end
+
 end
 
 
