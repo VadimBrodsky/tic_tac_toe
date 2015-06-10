@@ -198,6 +198,11 @@ class Game
     win_mark.length == 1 && win_mark.first != ' '
   end
 
+  # def check_rows(r)
+  #   (1..3).each do |i|
+  #   end
+  # end
+
   def winning_column?(c = 1)
     win_mark = @ttt.column(c).collect{|c| c.mark}.uniq
     win_mark.length == 1 && win_mark.first != ' '
@@ -218,11 +223,11 @@ class Game
 
   def winner_found?
     (1..3).each do |i|
-      winner = true if winning_row?(i)
-      winner = true if winning_column?(i)
-      winner = true if winning_diagonal?(i)
+      @game_state[:game_over] = true if winning_row?(i)
+      @game_state[:game_over] = true if winning_column?(i)
+      @game_state[:game_over] = true if winning_diagonal?(i)
     end
-    winner
+    @game_state[:game_over]
   end
 
 end
